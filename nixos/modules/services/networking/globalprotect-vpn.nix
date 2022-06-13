@@ -30,6 +30,22 @@ in
       type = types.attrs;
     };
 
+    settings = mkOption {
+      description = ''
+        GlobalProtect-openconnect configuration. For more information, visit
+        <link
+        xlink:href="https://github.com/yuezk/GlobalProtect-openconnect/wiki/Configuration"
+        />.
+      '';
+      default = { };
+      example = {
+        "vpn1.company.com" = {
+          openconnect-args = "--script=/path/to/vpnc-script";
+        };
+      };
+      type = types.attrs;
+    };
+
     csdWrapper = mkOption {
       description = lib.mdDoc ''
         A script that will produce a Host Integrity Protection (HIP) report,
