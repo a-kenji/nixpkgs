@@ -1,6 +1,7 @@
 { lib, buildPackages, runCommand, nettools, bc, bison, flex, perl, rsync, gmp, libmpc, mpfr, openssl
 , libelf, cpio, elfutils, zstd, python3Minimal, zlib, pahole
 , writeTextFile
+, rustPlatform, rust-bindgen-kernel
 }:
 
 let
@@ -112,7 +113,7 @@ let
       patches =
         map (p: p.patch) kernelPatches
         # Required for deterministic builds along with some postPatch magic.
-        ++ optional (lib.versionAtLeast version "4.13") ./randstruct-provide-seed.patch
+        #++ optional (lib.versionAtLeast version "4.13") ./randstruct-provide-seed.patch
         # Fixes determinism by normalizing metadata for the archive of kheaders
         ++ optional (lib.versionAtLeast version "5.2" && lib.versionOlder version "5.4") ./gen-kheaders-metadata.patch;
 
@@ -327,10 +328,13 @@ stdenv.mkDerivation ((drvAttrs config stdenv.hostPlatform.linux-kernel kernelPat
       ++ optionals (lib.versionAtLeast version "4.16") [ bison flex ]
       ++ optionals (lib.versionAtLeast version "5.2")  [ cpio pahole zlib ]
       ++ optional  (lib.versionAtLeast version "5.8")  elfutils
+      ++ [ rustPlatform.rust.rustc rustPlatform.bindgenHook rust-bindgen-kernel ]
       ;
 
   hardeningDisable = [ "bindnow" "format" "fortify" "stackprotector" "pic" "pie" ];
 
+  RUST_LIB_SRC= "${rustPlatform.rustLibSrc}";
+      
   # Absolute paths for compilers avoid any PATH-clobbering issues.
   makeFlags = commonMakeFlags ++ [
     "CC=${stdenv.cc}/bin/${stdenv.cc.targetPrefix}cc"

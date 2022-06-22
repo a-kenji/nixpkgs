@@ -8,6 +8,8 @@
 , mpfr ? null
 , lib
 , stdenv
+, rustPlatform
+, rust-bindgen-kernel
 
 , # The kernel source tarball.
   src
@@ -52,6 +54,7 @@
 , isZen      ? false
 , isLibre    ? false
 , isHardened ? false
+, isRust     ? false
 
 # easy overrides to stdenv.hostPlatform.linux-kernel members
 , autoModules ? stdenv.hostPlatform.linux-kernel.autoModules
@@ -124,7 +127,8 @@ let
 
     depsBuildBuild = [ buildPackages.stdenv.cc ];
     nativeBuildInputs = [ perl gmp libmpc mpfr ]
-      ++ lib.optionals (lib.versionAtLeast version "4.16") [ bison flex ];
+      ++ lib.optionals (lib.versionAtLeast version "4.16") [ bison flex ]
+      ++ lib.optionals isRust [ rustPlatform.rust.rustc rustPlatform.bindgenHook rust-bindgen-kernel ];
 
     platformName = stdenv.hostPlatform.linux-kernel.name;
     # e.g. "defconfig"
@@ -151,6 +155,7 @@ let
       export HOSTCXX=$CXX_FOR_BUILD
       export HOSTAR=$AR_FOR_BUILD
       export HOSTLD=$LD_FOR_BUILD
+      export RUST_LIB_SRC=${rustPlatform.rustLibSrc}
 
       # Get a basic config file for later refinement with $generateConfig.
       make $makeFlags \

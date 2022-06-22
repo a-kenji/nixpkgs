@@ -8,6 +8,7 @@
 , dontRecurseIntoAttrs
 , stdenv
 , stdenvNoCC
+, clang13Stdenv
 , newScope
 , lib
 , fetchurl
@@ -170,6 +171,14 @@ in {
     };
 
     linux_5_18 = callPackage ../os-specific/linux/kernel/linux-5.18.nix {
+      kernelPatches = [
+        kernelPatches.bridge_stp_helper
+        kernelPatches.request_key_helper
+      ];
+    };
+
+    linux_rust = callPackage ../os-specific/linux/kernel/linux-rust.nix {
+      stdenv = clang13Stdenv;
       kernelPatches = [
         kernelPatches.bridge_stp_helper
         kernelPatches.request_key_helper
@@ -541,6 +550,8 @@ in {
     linux_testing = packagesFor kernels.linux_testing;
     linux_testing_bcachefs = recurseIntoAttrs (packagesFor kernels.linux_testing_bcachefs);
 
+    linux_rust = packagesFor kernels.linux_rust;
+    
     linux_hardened = recurseIntoAttrs (hardenedPackagesFor packageAliases.linux_default.kernel { });
 
     linux_4_14_hardened = recurseIntoAttrs (hardenedPackagesFor kernels.linux_4_14 {
