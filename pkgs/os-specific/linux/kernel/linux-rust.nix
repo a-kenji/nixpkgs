@@ -25,6 +25,8 @@ buildLinux (args // rec {
     RETPOLINE = no;
 
     RUST = yes;
+    SAMPLES = yes;
+    SAMPLES_RUST = yes;
   };
 
   isRust = true;
