@@ -21,6 +21,13 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-M2c/5Fmpg/QRJFpJ+B/X8ZZq8eqOypsJWpQMVCuFRfY=";
   };
 
+  patches = [
+    (fetchpatch {
+      url = "https://gitlab.gnome.org/GNOME/babl/-/commit/b05b2826365a7dbc6ca1bf0977b848055cd0cbb6.patch";
+      hash = "sha256-zyDOc6FcVyZeMij1XjJ46XXWLO5MMz9ZqLKjjT6VSCI=";
+    })
+  ];
+
   nativeBuildInputs = [
     meson
     ninja
