@@ -5,6 +5,12 @@
 , pkgconf
 , freetype
 , expat
+, pop-launcher
+, libGL
+, libglvnd
+, xorg
+, makeWrapper
+, vulkan-loader
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -27,8 +33,24 @@ rustPlatform.buildRustPackage rec {
 
   cargoSha256 = "sha256-IOhAGrAiT2mnScNP7k7XK9CETUr6BjGdQVdEUvTYQT4=";
 
-  nativeBuildInputs = [ cmake pkgconf ];
-  buildInputs = [ freetype expat ];
+  nativeBuildInputs = [ cmake pkgconf makeWrapper];
+  buildInputs = [
+    freetype expat
+    libGL libglvnd
+   ] ++ (with xorg; [
+    libX11
+    libXcursor
+    libXi
+    libXrandr
+    libxcb
+  ]);
+
+
+  postInstall = ''
+  wrapProgram "$out/bin/${pname}" \
+    --prefix PATH : "${lib.makeBinPath [ pop-launcher ]}" \
+    --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ vulkan-loader libGL ]}
+'';
 
   meta = with lib; {
     description = "A general purpose application launcher for X and wayland inspired by rofi/wofi and alfred";
