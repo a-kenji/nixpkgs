@@ -355,6 +355,10 @@ let
       orga = "indoorvivants";
       repo = "tree-sitter-smithy";
     };
+    "tree-sitter-just" = {
+      orga = "IndianBoy42";
+      repo = "tree-sitter-just";
+    };
     "tree-sitter-jsonnet" = {
       orga = "sourcegraph";
       repo = "tree-sitter-jsonnet";

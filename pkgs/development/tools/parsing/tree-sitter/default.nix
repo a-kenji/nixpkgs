@@ -74,6 +74,7 @@ let
         { tree-sitter-markdown = grammars'.tree-sitter-markdown // { location = "tree-sitter-markdown"; }; } //
         { tree-sitter-markdown-inline = grammars'.tree-sitter-markdown // { language = "markdown_inline"; location = "tree-sitter-markdown-inline"; }; } //
         { tree-sitter-wing = grammars'.tree-sitter-wing // { location = "libs/tree-sitter-wing"; generate = true; }; };
+        # { tree-sitter-just = grammars'.tree-sitter-just // { location = "tree-sitter-just"; generate = false; }; };
     in
     lib.mapAttrs build (grammars);
 
