@@ -12,9 +12,11 @@
 , expat
 , linux-pam
 , wayland
+, makeWrapper
 , which
 , lld
 , util-linuxMinimal
+, cosmic-bg
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -44,7 +46,7 @@ rustPlatform.buildRustPackage rec {
     substituteInPlace justfile --replace '#!/usr/bin/env' "#!$(command -v env)"
   '';
 
-  nativeBuildInputs = [ rustPlatform.bindgenHook cmake just pkg-config which lld util-linuxMinimal ];
+  nativeBuildInputs = [ rustPlatform.bindgenHook cmake just pkg-config which lld util-linuxMinimal makeWrapper];
   buildInputs = [ libxkbcommon fontconfig freetype expat wayland linux-pam ];
 
   dontUseJustBuild = true;
@@ -57,6 +59,11 @@ rustPlatform.buildRustPackage rec {
     "bin-src"
     "target/${rust.lib.toRustTargetSpecShort stdenv.hostPlatform}/release/cosmic-greeter"
   ];
+
+  postInstall = ''
+  wrapProgram "$out/bin/cosmic-greeter" \
+   --prefix PATH : "${lib.makeBinPath [ cosmic-bg ]}"
+  '';
 
   meta = with lib; {
     homepage = "https://github.com/pop-os/cosmic-greeter";
