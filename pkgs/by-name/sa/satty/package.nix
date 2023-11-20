@@ -1,10 +1,7 @@
 { lib
-, stdenv
 , fetchFromGitHub
-, cargo
-, pkg-config
 , rustPlatform
-, rustc
+, pkg-config
 , wrapGAppsHook4
 , cairo
 , gdk-pixbuf
@@ -14,30 +11,27 @@
 , pango
 }:
 
-stdenv.mkDerivation rec {
+rustPlatform.buildRustPackage rec {
   pname = "satty";
-  version = "0.6.0";
+  version = "0.7.0";
 
   src = fetchFromGitHub {
     owner = "gabm";
     repo = "Satty";
     rev = "v${version}";
-    hash = "sha256-rR24RFM9chq2f2C/aIk6WXIfTUU36Qnm9jOLiRiUnyE=";
+    hash = "sha256-x2ljheG7ZqaeiPersC/e8Er2jvk5TJs65Y3N1GjTiNU=";
   };
 
-  cargoDeps = rustPlatform.importCargoLock {
+  cargoLock =  {
     lockFile = ./Cargo.lock;
   };
 
+  patches = [ ./fix_lock.patch ];
+
   nativeBuildInputs = [
-    cargo
     pkg-config
-    rustPlatform.cargoSetupHook
-    rustc
     wrapGAppsHook4
   ];
-
-  PREFIX = "$out";
 
   buildInputs = [
     cairo
