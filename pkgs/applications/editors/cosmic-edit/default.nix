@@ -15,35 +15,33 @@
 , fontconfig
 , freetype
 , wayland
-, expat
-, udev
-, which
-, lld
-, util-linuxMinimal
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "cosmic-edit";
-  version = "unstable-2023-11-10";
+  version = "unstable-2023-11-29";
 
   src = fetchFromGitHub {
     owner = "pop-os";
     repo = "cosmic-edit";
-    rev = "c66a28320a5274d62d68a6d90567bcf4d3e9666c";
-    hash = "sha256-QmIF2QAKx/dImKLy2qXJHIBs+/JhbHXE4FTqR2FClrA=";
+    rev = "2dd2d8d4ed0802faa272a1f1ee0157d531a51e03";
+    hash = "sha256-J9bpSfTkVXa2mbpdSowwtzZPBvgMPpKRvxVpr0J4/CA=";
   };
+
+  cargoHash = "";
 
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {
       "accesskit-0.11.0" = "sha256-xVhe6adUb8VmwIKKjHxwCwOo5Y1p3Or3ylcJJdLDrrE=";
-      "cosmic-config-0.1.0" = "sha256-IyxAnQCR3btqBeQf0ZRozGXCz+xFiiT/oyaUUX+rjQY=";
-      "cosmic-text-0.10.0" = "sha256-8YqRog4/QBijOvWzkMjKHm859WxkrOUOc9Ubze6Ypyo";
-      "modit-0.1.0" = "sha256-skTUarsaBLWl0LSxzJQ2MdFGvcKPAbazRdss4Q+PeT8=";
+      "atomicwrites-0.4.2" = "sha256-QZSuGPrJXh+svMeFWqAXoqZQxLq/WfIiamqvjJNVhxA=";
+      "cosmic-config-0.1.0" = "sha256-a136DDSEiUxBZ0l4I2L3SYvGv+a5dz7S3azNsWdBdnE=";
+      "cosmic-text-0.10.0" = "sha256-Je2k2U5u4QH8F/QKE6ZnDfAfdN2R//t+4l3mS5RIzt4=";
       "sctk-adwaita-0.5.4" = "sha256-yK0F2w/0nxyKrSiHZbx7+aPNY2vlFs7s8nu/COp2KqQ=";
+      "softbuffer-0.3.3" = "sha256-eKYFVr6C1+X6ulidHIu9SP591rJxStxwL9uMiqnXx4k=";
       "smithay-client-toolkit-0.16.1" = "sha256-z7EZThbh7YmKzAACv181zaEZmWxTrMkFRzP0nfsHK6c=";
-      "softbuffer-0.2.0" = "sha256-VD2GmxC58z7Qfu/L+sfENE+T8L40mvUKKSfgLmCTmjY=";
-      "taffy-0.3.11" = "sha256-0hXOEj6IjSW8e1t+rvxBFX6V9XRum3QO2Des1XlHJEw=";
+      "systemicons-0.7.0" = "sha256-zzAI+6mnpQOh+3mX7/sJ+w4a7uX27RduQ99PNxLNF78=";
+      "taffy-0.3.11" = "sha256-SCx9GEIJjWdoNVyq+RZAGn0N71qraKZxf9ZWhvyzLaI=";
       "winit-0.28.6" = "sha256-FhW6d2XnXCGJUMoT9EMQew9/OPXiehy/JraeCiVd76M=";
     };
   };
@@ -52,8 +50,8 @@ rustPlatform.buildRustPackage rec {
     substituteInPlace justfile --replace '#!/usr/bin/env' "#!$(command -v env)"
   '';
 
-  nativeBuildInputs = [ cmake just pkg-config which lld util-linuxMinimal makeBinaryWrapper ];
-  buildInputs = [ libxkbcommon libinput fontconfig freetype wayland expat udev glib gtk3 ];
+  nativeBuildInputs = [ cmake just pkg-config makeBinaryWrapper ];
+  buildInputs = [ libxkbcommon libinput fontconfig freetype wayland glib gtk3 ];
 
   dontUseJustBuild = true;
 
