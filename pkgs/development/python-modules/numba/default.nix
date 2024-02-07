@@ -1,4 +1,4 @@
-{ lib
+{ libnumba
 , stdenv
 , pythonAtLeast
 , pythonOlder

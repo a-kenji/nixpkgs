@@ -90,18 +90,31 @@ rustPlatform.buildRustPackage rec {
     })
   ];
 
+  # Force linking to libEGL, which is always dlopen()ed, and to
+  # libwayland-client, which is always dlopen()ed except by the
+  # obscure winit backend.
+  RUSTFLAGS = map (a: "-C link-arg=${a}") [
+    "-Wl,--push-state,--no-as-needed"
+    "-lEGL"
+    "-lwayland-client"
+    "-Wl,--pop-state"
+  ];
+
   postInstall = ''
-      install -Dm644 assets/linux/org.squidowl.halloy.png $out/share/icons/hicolor/128x128/apps/org.squidowl.halloy.png
-      wrapProgram "$out/bin/${pname}" \
-    --prefix LD_LIBRARY_PATH : ${
+    set -x
+    install -Dm644 assets/linux/org.squidowl.halloy.png $out/share/icons/hicolor/128x128/apps/org.squidowl.halloy.png
+    rpath=$(patchelf --print-rpath $out/bin/halloy)
+    patchelf --add-needed libvulkan.so "$out/bin/${pname}"
+    patchelf --add-needed libEGL.so "$out/bin/${pname}"
+    patchelf --add-needed libxkbcommon.so "$out/bin/${pname}"
+    patchelf --set-rpath "$rpath":"${
       lib.makeLibraryPath [
         wayland
         libxkbcommon
         vulkan-loader
         libGL
       ]
-    }
-
+    }" "$out/bin/${pname}"
   '';
 
   meta = with lib; {
