@@ -89,7 +89,7 @@ let
     description = "An open source cross-platform alternative to AirDrop";
     homepage = "https://localsend.org/";
     license = licenses.mit;
-    mainProgram = "localsend";
+    mainProgram = "localsend_app";
     maintainers = with maintainers; [ sikmir linsui ];
   };
 in
