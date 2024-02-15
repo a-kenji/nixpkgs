@@ -7,6 +7,7 @@
 , cosmic-icons
 , just
 , pkg-config
+, util-linux
 , libxkbcommon
 , libinput
 , fontconfig
@@ -49,7 +50,7 @@ rustPlatform.buildRustPackage rec {
     substituteInPlace justfile --replace '#!/usr/bin/env' "#!$(command -v env)"
   '';
 
-  nativeBuildInputs = [ cmake just pkg-config makeBinaryWrapper ];
+  nativeBuildInputs = [ cmake just pkg-config util-linux makeBinaryWrapper ];
   buildInputs = [ libxkbcommon libinput fontconfig freetype wayland expat udev ];
 
   dontUseJustBuild = true;
