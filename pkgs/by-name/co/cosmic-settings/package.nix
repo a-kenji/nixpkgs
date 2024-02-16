@@ -68,7 +68,7 @@ rustPlatform.buildRustPackage rec {
   postInstall = ''
     wrapProgram "$out/bin/cosmic-settings" \
       --prefix PATH : ${lib.makeBinPath [ cosmic-randr ]} \
-      --suffix XDG_DATA_DIRS : "${cosmic-icons}/share"
+      --suffix XDG_DATA_DIRS : "$out/share:${cosmic-icons}/share"
   '';
 
   meta = with lib; {
