@@ -6,10 +6,12 @@
 , cmake
 , just
 , pkg-config
-, util-linux
+, makeBinaryWrapper
 , libxkbcommon
 , linux-pam
 , wayland
+, cosmic-settings
+, cosmic-icons
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -40,7 +42,7 @@ rustPlatform.buildRustPackage rec {
     };
   };
 
-  nativeBuildInputs = [ rustPlatform.bindgenHook cmake just pkg-config ];
+  nativeBuildInputs = [ rustPlatform.bindgenHook cmake just pkg-config makeBinaryWrapper ];
   buildInputs = [ libxkbcommon wayland linux-pam ];
 
   cargoBuildFlags = [ "--all" ];
@@ -58,6 +60,15 @@ rustPlatform.buildRustPackage rec {
     "daemon-src"
     "target/${rust.lib.toRustTargetSpecShort stdenv.hostPlatform}/release/cosmic-greeter-daemon"
   ];
+
+  postInstall = ''
+    wrapProgram $out/bin/cosmic-greeter \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ wayland ]}" \
+      --suffix XDG_DATA_DIRS : ${cosmic-settings}/share:${cosmic-icons}/share
+
+    wrapProgram $out/bin/cosmic-greeter-daemon \
+      --suffix XDG_DATA_DIRS : ${cosmic-settings}/share:${cosmic-icons}/share
+  '';
 
   meta = with lib; {
     homepage = "https://github.com/pop-os/cosmic-greeter";
