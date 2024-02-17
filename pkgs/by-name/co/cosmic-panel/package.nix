@@ -3,7 +3,7 @@
 , fetchFromGitHub
 , just
 , pkg-config
-, rust
+, util-linux
 , rustPlatform
 , libglvnd
 , libxkbcommon
@@ -34,8 +34,14 @@ rustPlatform.buildRustPackage {
     };
   };
 
-  nativeBuildInputs = [ just pkg-config ];
+  nativeBuildInputs = [ just pkg-config util-linux ];
   buildInputs = [ libglvnd libxkbcommon wayland ];
+
+  postPatch = ''
+    substituteInPlace justfile --replace \
+      "find data/default_schema -type f -exec install -Dm0644 {} {{default-schema-target}}/{} \;" \
+      "find data/default_schema -type f -exec echo {} \; | rev | cut -d'/' -f-3 | rev | xargs -d '\n' -I {} install -Dm0644 data/default_schema/{} {{default-schema-target}}/{}"
+  '';
 
   dontUseJustBuild = true;
 
