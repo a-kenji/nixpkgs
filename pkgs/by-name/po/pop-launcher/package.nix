@@ -49,6 +49,7 @@ rustPlatform.buildRustPackage rec {
     for script in scripts/*; do
       cp -r $script $scripts_dir
     done
+    chmod +x $scripts_dir/**/*.sh
   '';
 
   meta = with lib; {
