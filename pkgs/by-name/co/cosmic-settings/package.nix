@@ -9,29 +9,31 @@
   cosmic-randr,
   just,
   pkg-config,
-  libxkbcommon,
-  libinput,
+  expat,
   fontconfig,
   freetype,
-  wayland,
-  expat,
+  libinput,
+  libxkbcommon,
+  pipewire,
+  pulseaudio,
   udev,
   util-linux,
+  wayland,
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "cosmic-settings";
-  version = "1.0.0-alpha.1";
+  version = "1.0.0-alpha.5.1";
 
   src = fetchFromGitHub {
     owner = "pop-os";
     repo = pname;
     rev = "epoch-${version}";
-    hash = "sha256-gTzZvhj7oBuL23dtedqfxUCT413eMoDc0rlNeqCeZ6E=";
+    hash = "sha256-UOMU8Xy+El5yZk7yjM6k1Ge0144MAV4DB2e4hFFHFRg=";
   };
 
   useFetchCargoVendor = true;
-  cargoHash = "sha256-zMHJc6ytbOoi9E47Zsg6zhbQKObsaOtVHuPnLAu36I4=";
+  cargoHash = "sha256-uof1KGlrZu5fzkeNRHwTUNHJLPzX7nglLkj1kFmsnwk=";
 
   postPatch = ''
     substituteInPlace justfile --replace '#!/usr/bin/env' "#!$(command -v env)"
@@ -40,18 +42,21 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [
     cmake
     just
-    pkg-config
     makeBinaryWrapper
+    pkg-config
+    rustPlatform.bindgenHook
+    util-linux
   ];
   buildInputs = [
-    libxkbcommon
-    libinput
+    expat
     fontconfig
     freetype
-    wayland
-    expat
+    libinput
+    libxkbcommon
+    pipewire
+    pulseaudio
     udev
-    util-linux
+    wayland
   ];
 
   dontUseJustBuild = true;
