@@ -34,6 +34,7 @@ in
         project = mkTemplateOption "project template";
         report = mkTemplateOption "report template";
         section = mkTemplateOption "section template";
+        template = mkTemplateOption "template template";
       };
       settings = mkOption {
         type = format.type;
@@ -57,6 +58,7 @@ in
           ln -sf ${cfg.templates.project} ./project_template.md
           ln -sf ${cfg.templates.report} ./report_template.md
           ln -sf ${cfg.templates.section} ./section_template.md
+          ln -sf ${cfg.templates.template} ./template.md
           ln -sf ${settingsFile} ./config.toml
         '';
 
